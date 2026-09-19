@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- EDIT: confirmed name and description. Add only owner-approved game facts. -->
+  <title>Containment Breach — Multiplayer VR Locomotion</title>
+  <meta name="description" content="Explore different levels with your friends and find your way out. Containment Breach is a free-roam VR locomotion game. Meet Bonegrit and discover his story.">
+  <meta name="theme-color" content="#090a09">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%23090a09' d='M0 0h64v64H0z'/%3E%3Cpath fill='%23dcc450' d='M12 14h40v10H23v16h29v10H12z'/%3E%3C/svg%3E">
+  <script>document.documentElement.classList.replace('no-js','js')</script>
+  <link rel="stylesheet" href="vendor/fonts.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preload" as="image" href="images/logo.png">
+  <link rel="preload" as="image" href="images/bonegrit.png">
+</head>
+<body>
+  <a class="skip-link" href="#game">Skip to game information</a>
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- EDIT: entry screen only enables optional website ambience, never a microphone. -->
+  <div class="gate" role="dialog" aria-modal="true" aria-label="Enter Containment Breach">
+    <div class="gate-inner">
+      <img class="gate-logo" src="images/logo.png" alt="Containment Breach" width="1215" height="297">
+      <p>Bring your friends.<br>Find your way out.</p>
+      <div class="gate-actions">
+        <button class="btn" data-enter="sound" type="button">Enter with sound <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
+        <button class="text-link" data-enter="mute" type="button">Enter without sound</button>
+      </div>
+      <small>Optional ambient audio for the website.</small>
+    </div>
+  </div>
+
+  <header class="nav">
+    <a class="brand slot" href="#home" aria-label="Containment Breach home" data-file="images/logo" data-art="provided:logo">
+      <img src="images/logo.png" alt="Containment Breach" width="1215" height="297">
+    </a>
+    <nav aria-label="Main navigation">
+      <a href="#game">The game</a>
+      <a href="#worlds">The levels</a>
+      <a href="#bonegrit">Bonegrit</a>
+    </nav>
+    <button class="sound-toggle" type="button" aria-pressed="false" aria-label="Enable website ambient sound">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/><path class="sound-waves" d="M17 8c2 2 2 6 0 8m3-11c4 4 4 10 0 14"/><path class="sound-cross" d="m17 9 5 6m0-6-5 6"/></svg>
+      <span>Sound off</span>
+    </button>
+  </header>
+
+  <main>
+    <section class="hero" id="home" aria-labelledby="game-title">
+      <div class="hero-content">
+        <p class="intro-line">Free-roam multiplayer VR</p>
+        <!-- EDIT: supplied logo. Replacing images/logo updates every logo slot. -->
+        <h1 id="game-title" class="slot hero-logo" data-file="images/logo" data-art="provided:logo"><img src="images/logo.png" alt="Containment Breach" width="1215" height="297"></h1>
+        <h2>Explore together.<br>Escape together.</h2>
+        <p class="hero-description">Travel between different levels with your friends. Explore each map and find your way out.</p>
+        <div class="hero-actions">
+          <a class="btn" href="#game">Explore the game <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
+          <a class="text-link" href="#bonegrit">Meet Bonegrit <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14"/></svg></a>
+        </div>
+      </div>
+      <figure class="hero-entity slot" data-file="images/bonegrit" data-art="provided:bonegrit">
+        <img src="images/bonegrit.png" alt="Bonegrit, a dark creature with very long arms" width="528" height="916">
+        <figcaption>Bonegrit<span>He feels you coming.</span></figcaption>
+      </figure>
+      <a class="scroll-cue" href="#game">Scroll to explore <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v15m-6-6 6 6 6-6"/></svg></a>
+    </section>
+
+    <!-- EDIT: only the confirmed premise. No assumed player cap, equipment, or voice mechanics. -->
+    <section id="game" class="game section" aria-labelledby="game-heading">
+      <div class="section-intro">
+        <p class="section-label">The game</p>
+        <h2 id="game-heading">Your friends.<br>Your way out.</h2>
+        <p>Containment Breach is a free-roam locomotion game in VR. Travel between levels with your friends, explore different maps, and escape them.</p>
+      </div>
+      <div class="game-features">
+        <article class="feature"><h3>Move freely.</h3><p>Explore in a game built around VR locomotion.</p></article>
+        <article class="feature"><h3>Travel together.</h3><p>Move between different levels with your friends.</p></article>
+        <article class="feature"><h3>Find your way out.</h3><p>Explore the maps and escape the levels.</p></article>
+      </div>
+    </section>
+
+    <section id="worlds" class="worlds section" aria-labelledby="worlds-heading">
+      <div class="worlds-heading">
+        <p class="section-label">The levels</p>
+        <h2 id="worlds-heading">Different maps.<br><span>One game.</span></h2>
+      </div>
+      <div class="worlds-copy"><p>Travel between different kinds of levels, including some liminal spaces.</p><p>There’s more than one place to explore. Bring your friends and find your way through.</p></div>
+      <!-- EDIT: approved screenshots auto-replace these hidden slots. No invented map previews. -->
+      <div class="map-gallery" hidden>
+        <figure class="slot map-shot" data-file="images/level-1" data-art="none" data-alt="A level in Containment Breach" hidden></figure>
+        <figure class="slot map-shot" data-file="images/level-2" data-art="none" data-alt="A level in Containment Breach" hidden></figure>
+        <figure class="slot map-shot" data-file="images/level-3" data-art="none" data-alt="A level in Containment Breach" hidden></figure>
+      </div>
+    </section>
+
+    <!-- EDIT: Bonegrit is the only confirmed entity. Do not add other entities without owner input. -->
+    <section id="bonegrit" class="entity section" aria-labelledby="bonegrit-heading">
+      <div class="entity-intro"><p class="section-label">Meet Bonegrit</p><h2 id="bonegrit-heading">He feels<br><span>you coming.</span></h2></div>
+      <div class="entity-layout">
+        <figure class="entity-image slot" data-file="images/bonegrit" data-art="provided:bonegrit">
+          <img src="images/bonegrit.png" alt="Full-body image of Bonegrit, showing his dark body and long arms" width="528" height="916" loading="lazy">
+          <figcaption>Bonegrit</figcaption>
+        </figure>
+        <div class="entity-info">
+          <h3>Bonegrit</h3>
+          <p class="entity-summary">Blind. Deaf. Aware of the vibrations beneath you.</p>
+          <p>Bonegrit knows you’re there through vibrations in the ground. He absorbs blood through his skin to get nutrients.</p>
+          <dl class="entity-facts">
+            <div><dt>Sight</dt><dd>Blind</dd></div>
+            <div><dt>Hearing</dt><dd>Deaf</dd></div>
+            <div><dt>Detection</dt><dd>Ground vibrations</dd></div>
+            <div><dt>Nutrients</dt><dd>Blood absorbed through his skin</dd></div>
+          </dl>
+          <a class="text-link" href="#lore">Read his story <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v15m-6-6 6 6 6-6"/></svg></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- EDIT: owner-supplied lore preserved verbatim, with paragraph breaks only. -->
+    <section id="lore" class="lore section" aria-labelledby="lore-heading">
+      <div><p class="section-label">Bonegrit’s story</p><h2 id="lore-heading">Before<br> the virus.</h2></div>
+      <div class="lore-copy">
+        <p>Bonegrit was a normal monke, very healthy. But he was soon taken out by the virus, the one that wiped out most people.</p>
+        <p>He held onto some medication beforehand, but it was contaminated with parasites. Bonegrit had nothing to lose, so he took some to knock him out instantly.</p>
+        <p>Instead, the parasites and the virus worked together to eat around his head. Bonegrit is now blind and deaf. He gets nutrients by absorbing blood through his skin.</p>
+        <p class="lore-last">He only knows you're there because of vibrations through the ground.</p>
+      </div>
+    </section>
+
+    <!-- EDIT: reveal trailer remains hidden until a real YouTube ID is supplied. -->
+    <section id="trailer" class="trailer section" hidden>
+      <p class="section-label">Containment Breach</p><h2>Game trailer</h2>
+      <div class="trailer-frame" data-youtube=""><button type="button" class="btn play-btn">Watch the trailer <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7z"/></svg></button></div>
+    </section>
+
+    <!-- EDIT: official links appear only when populated in CONFIG. -->
+    <section class="official-links section" id="official" hidden aria-labelledby="official-heading"><h2 id="official-heading">Find the game.</h2><div class="official-actions"></div></section>
+  </main>
+
+  <footer class="footer" id="footer">
+    <a class="slot footer-logo" href="#home" aria-label="Containment Breach home" data-file="images/logo" data-art="provided:logo"><img src="images/logo.png" alt="Containment Breach" width="1215" height="297" loading="lazy"></a>
+    <p>Explore together. Escape together.</p>
+    <nav aria-label="Footer"><a href="#game">The game</a><a href="#worlds">The levels</a><a href="#bonegrit">Bonegrit</a><a href="#home">Back to top <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20V5m-6 6 6-6 6 6"/></svg></a></nav>
+  </footer>
+
+  <script src="vendor/gsap.min.js" defer></script>
+  <script src="vendor/ScrollTrigger.min.js" defer></script>
+  <script src="vendor/lenis.min.js" defer></script>
+  <script src="js/sound.js" defer></script>
+  <script src="js/main.js" defer></script>
+</body>
+</html>
