@@ -2,7 +2,7 @@
    SOUND — the ambience is synthesised live (no audio files):
    the fluorescent hum, footsteps on carpet, a low dread drone, breathing,
    a heartbeat and tape static. main.js turns the knobs as you scroll.
-   The piano music is a recording; music.js starts and stops it with this switch.
+   The music is a recording; music.js starts and stops it with this switch.
    ===================================================================== */
 window.Sound = (() => {
   let ctx = null, master, humBus, droneBus, staticBus, breathBus, noiseBuf, on = false, heartTimer = null, bpm = 0;

@@ -18,8 +18,8 @@ Open http://localhost:5178/. No install or build step is required. Fonts and Jav
 - `css/style.css`: layout, colours and responsive styles.
 - `js/main.js`: CONFIG, navigation, image discovery and optional audio controls.
 - `js/sound.js`: synthesized website ambience.
-- `js/music.js`: starts, stops and loops the site's piano music.
-- `audio/footsteps.mp3`: the recording of that music.
+- `js/music.js`: starts, stops and loops the site's music.
+- `audio/concerto.mp3`: the recording of that music.
 - `tools/music/`: the score of the piece and the script that recorded it.
 - `images/`: supplied artwork and future approved map screenshots.
 - `vendor/`: bundled libraries, fonts and available license files.
@@ -28,15 +28,16 @@ The trailer and official-link sections stay hidden until configured. Empty map-i
 
 ## Music
 
-"Enter with sound" plays *Rondo agitato in F minor, “Footsteps”*, an original piano piece written for this site, over the ambience. `audio/footsteps.mp3` is the recording; `js/music.js` only starts and stops it with the sound control and plays it again after a short silence. The file is not downloaded until a visitor asks for sound.
+"Enter with sound" plays *Concerto in D minor for harpsichord and strings*, an original piece in the Baroque manner written for this site, over the ambience. `audio/concerto.mp3` is the recording; `js/music.js` only starts and stops it with the sound control and plays it again after a breath. The file is not downloaded until a visitor asks for sound.
 
-The piece is written out as text in `tools/music/score.mjs`. `tools/music/render.mjs` plays that score on the Salamander Grand Piano V3 — a Yamaha C5 concert grand recorded note by note, at 16 loudness levels, by Alexander Holm — and writes the MP3. Nothing in it is synthesized. To change the music, edit the score, download the 44.1 kHz 16-bit recordings from https://freepats.zenvoid.org/Piano/acoustic-grand-piano.html, and run:
+The piece is written out as text in `tools/music/score.mjs`, one line per instrument per bar. `tools/music/render.mjs` turns that into a performance and has FluidSynth play it with sampled instruments: a harpsichord and a string orchestra. To change the music, edit the score and run:
 
 ```sh
-node tools/music/render.mjs path/to/SalamanderGrandPianoV3_44.1khz16bit/44.1khz16bit
+apt install fluidsynth ffmpeg musescore-general-soundfont-lossless
+node tools/music/render.mjs
 ```
 
-This needs ffmpeg. Piano recordings: Salamander Grand Piano V3 by Alexander Holm, licensed [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/).
+Instrument samples: the MuseScore General SoundFont by S. Christian Collins and contributors, MIT licence. Any General MIDI SoundFont with a harpsichord and a string section can be passed as the first argument instead.
 
 ## Review tools
 

@@ -1,12 +1,12 @@
 /* =====================================================================
-   MUSIC — Rondo agitato in F minor, "Footsteps": an original piano piece
-   written for this site. audio/footsteps.mp3 is a recording of it played
-   on a real concert grand; the score, and how the recording was made,
-   are in tools/music/. This file only starts and stops that recording
-   with the site's sound switch, and brings it round again after a pause.
+   MUSIC — Concerto in D minor for harpsichord and strings: an original
+   piece in the Baroque manner, written for this site. audio/concerto.mp3
+   is a recording of it; the score, and how the recording was made, are
+   in tools/music/. This file only starts and stops that recording with
+   the site's sound switch, and brings it round again after a breath.
    ===================================================================== */
 window.Music = (() => {
-  const FILE = 'audio/footsteps.mp3', VOLUME = .85, GAP = 6000;   // milliseconds of quiet before it plays again
+  const FILE = 'audio/concerto.mp3', VOLUME = .85, GAP = 2000;   // milliseconds of quiet before it plays again
   let audio = null, again = null, fader = null, playing = false;
 
   // a fifth of a second up or down, so starting and stopping never clicks
@@ -42,5 +42,5 @@ window.Music = (() => {
     fade(0, () => audio.pause());   // it picks up from the same spot next time
   }
 
-  return { title: 'Rondo agitato in F minor, “Footsteps”', play, pause, get playing() { return playing; } };
+  return { title: 'Concerto in D minor for harpsichord and strings', play, pause, get playing() { return playing; } };
 })();
