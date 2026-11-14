@@ -16,7 +16,7 @@ Open http://localhost:5178/. No build step is required. Fonts and runtime script
 
 The visual direction uses the supplied gold logo, charcoal backgrounds, large Teko headings, readable Barlow body copy, and the real Bonegrit artwork. Sections use open layouts and restrained scroll movement. Reduced-motion settings disable smooth scrolling and scroll effects.
 
-The entry screen offers optional piano music with website ambience, or silent entry. Keyboard focus stays inside the entry screen; Escape enters silently. Returning in the same tab skips entry and starts muted. Sound also mutes when the page is hidden. The music picks up from the bar it stopped in.
+The entry screen offers optional piano music with website ambience, or silent entry. Keyboard focus stays inside the entry screen; Escape enters silently. Returning in the same tab skips entry and starts muted. Sound also mutes when the page is hidden. The music picks up from where it stopped.
 
 The page works without JavaScript, showing the core content and supplied images. Optional gallery/trailer/link configuration requires JavaScript.
 
@@ -26,7 +26,8 @@ The page works without JavaScript, showing the core content and supplied images.
 - `css/style.css`: colours, typography and responsive layout.
 - `js/main.js`: CONFIG, entry, navigation, optional ambience controls and image discovery.
 - `js/sound.js`: locally synthesized website ambience.
-- `js/music.js`: the original piano piece (*Fantasia in F minor, “Before the Virus”*): its score, the performance rules and the synthesized piano. No audio files.
+- `js/music.js`: starts, stops and loops the piano music, *Rondo agitato in F minor, “Footsteps”*, an original piece written for the site.
+- `audio/footsteps.mp3`: the recording, played on a real concert grand. `tools/music/` holds the score and the script that recorded it; see README.
 - `PHOTOS-NEEDED.md`: installed images, future artwork and replacement instructions.
 - `SITE-REQUIREMENTS.md`: remaining factual questions, one per bullet.
 

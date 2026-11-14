@@ -18,7 +18,9 @@ Open http://localhost:5178/. No install or build step is required. Fonts and Jav
 - `css/style.css`: layout, colours and responsive styles.
 - `js/main.js`: CONFIG, navigation, image discovery and optional audio controls.
 - `js/sound.js`: synthesized website ambience.
-- `js/music.js`: the site's piano piece — its score, and the synthesized piano that plays it.
+- `js/music.js`: starts, stops and loops the site's piano music.
+- `audio/footsteps.mp3`: the recording of that music.
+- `tools/music/`: the score of the piece and the script that recorded it.
 - `images/`: supplied artwork and future approved map screenshots.
 - `vendor/`: bundled libraries, fonts and available license files.
 
@@ -26,9 +28,15 @@ The trailer and official-link sections stay hidden until configured. Empty map-i
 
 ## Music
 
-"Enter with sound" plays *Fantasia in F minor, “Before the Virus”*, an original piano piece written for this site, over the ambience. It is not a recording: `js/music.js` holds the score as text and performs it on a piano synthesized in the browser, so there are still no audio files. It loops after a short silence, pauses with the sound control, and resumes from the bar it stopped in.
+"Enter with sound" plays *Rondo agitato in F minor, “Footsteps”*, an original piano piece written for this site, over the ambience. `audio/footsteps.mp3` is the recording; `js/music.js` only starts and stops it with the sound control and plays it again after a short silence. The file is not downloaded until a visitor asks for sound.
 
-The notation is explained at the top of `js/music.js`; edit a bar and reload to hear the change. To save the piece as audio, run `Music.render()` in the browser console — it resolves to an `AudioBuffer` of the whole performance.
+The piece is written out as text in `tools/music/score.mjs`. `tools/music/render.mjs` plays that score on the Salamander Grand Piano V3 — a Yamaha C5 concert grand recorded note by note, at 16 loudness levels, by Alexander Holm — and writes the MP3. Nothing in it is synthesized. To change the music, edit the score, download the 44.1 kHz 16-bit recordings from https://freepats.zenvoid.org/Piano/acoustic-grand-piano.html, and run:
+
+```sh
+node tools/music/render.mjs path/to/SalamanderGrandPianoV3_44.1khz16bit/44.1khz16bit
+```
+
+This needs ffmpeg. Piano recordings: Salamander Grand Piano V3 by Alexander Holm, licensed [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/).
 
 ## Review tools
 
