@@ -11,6 +11,8 @@
 //   {p} {<f}           the strings' dynamic from here · swell or fade that arrives here (the piano keeps the level set in PARTS)
 //   {t100} {~72}       tempo from here · tempo that eases in to arrive here
 //   {hold1.5}          fermata, in seconds
+//   {l.9} {l~.95}      the piano's own loudness from here · a swell or fade that arrives here
+//   {ped2}             sustain pedal, changed every 2 beats ({ped0} = no pedal)
 
 export const TITLE = 'Concerto in D minor for piano and strings';
 
@@ -24,13 +26,29 @@ export const PARTS = [
   { id: 'cb', channel: 5, gain: .84, held: .78, early: .085 }
 ];
 
+const STEP = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+export const midi = name => {
+  const [, letter, accidental, octave] = name.match(/^([A-G])([b#]?)(\d)$/);
+  return 12 * (+octave + 1) + STEP[letter] + (accidental === 'b' ? -1 : accidental === '#' ? 1 : 0);
+};
+
 // ---- small helpers for the patterns Baroque music is built from ----
 const again = (note, times = 4) => `${note}e` + ` ${note}`.repeat(times - 1);                                    // a "drum" bass: repeated quavers
 const octaves = note => { const up = note.replace(/\d/, octave => +octave + 1); return `${note}e ${up} ${note} ${up}`; };   // broken octaves, the keyboard player's bass
 const lower = text => text.replace(/([A-G][b#]?)(\d)/g, (_, name, octave) => name + (octave - 1));              // the basses play the cello line an octave down
-const figure = (tones, shape) => { const key = Object.fromEntries(tones.split(' ').map((tone, i) => ['abcd'[i], tone])); return [...shape].map((letter, i) => key[letter] + (i ? '' : 's')).join(' '); };
+const figure = (tones, shape, length = 's') => { const key = Object.fromEntries(tones.split(' ').map((tone, i) => ['abcd'[i], tone])); return [...shape].map((letter, i) => key[letter] + (i ? '' : length)).join(' '); };
 const spread = tones => figure(tones, 'abcbdcbc');    // a four-note chord opened upwards
 const rock = tones => figure(tones, 'cbabcbab');      // a three-note chord rocked from the top
+// for the cadenza: every note of a scale or chord from one note to another, as a run of 32nd notes
+const SPELL = ['C', 'C#', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'G#', 'A', 'Bb', 'B'];
+const BELONG = { minor: [2, 4, 5, 7, 9, 10, 1], Dm: [2, 5, 9], A7: [9, 1, 4, 7], diminished: [1, 4, 7, 10], chromatic: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] };
+const run = (kind, from, to) => {
+  const out = [], last = midi(to), step = midi(from) <= last ? 1 : -1;
+  for (let key = midi(from); key !== last + step; key += step) if (BELONG[kind].includes(key % 12)) out.push(SPELL[key % 12] + (Math.floor(key / 12) - 1));
+  return out.map((note, i) => note + (i ? '' : 't')).join(' ');
+};
+const flash = tones => figure(tones, 'abcbdcbc', 't');                                                            // a chord opened upwards, twice as fast
+const doubled = (text, down = 0) => text.replace(/([A-G][b#]?)(\d)/g, (_, name, octave) => `[${name}${octave - down} ${name}${+octave + 1 - down}]`);   // in octaves
 
 // tutti: violins lead, the piano plays along, cellos and basses drive the bass
 const tutti = ({ v1, v2 = v1, va, vc, pr = v1, pl, marks = '', basses = true }) => ({ pr, pl: pl ?? vc, v1: marks + v1, v2, va, vc, cb: basses ? lower(vc) : 'rw' });
@@ -89,12 +107,32 @@ export const SCORE = [
   solo({ pr: 'E6s C#6 A5 G5 E6 C#6 A5 G5 D6 A5 F5 A5 D6 A5 F5 A5', pl: `${octaves('A2')} ${octaves('A2')}`, v1: 'E5e E5 E5 E5 F5 F5 F5 F5 {<f}', v2: 'C#5e C#5 C#5 C#5 D5 D5 D5 D5', va: 'G4e G4 G4 G4 A4 A4 A4 A4', vc: again('A2', 8) }),
   solo({ pr: 'A6s G6 F6 E6 D6 C#6 Bb5 A5 G5 F5 E5 D5 C#5 D5 E5 C#5', pl: `${octaves('A2')} ${octaves('A2')}`, v1: 'G5e G5 G5 G5 G5 G5 E5 E5', v2: again('E5', 8), va: again('A4', 8), vc: again('A2', 8), cb: again('A1', 8) }),
 
-  // ritornello, complete, home in D minor…
-  ...ritornello(),
-  // …and its cadence asked for once more, broadening, to the last chord
-  tutti({ marks: '{ff}', v1: HEAD, va: again('A4', 8), vc: again('D3', 8), pl: `${octaves('D3')} ${octaves('D3')}` }),
+  // ritornello, home in D minor — but its cadence is cut off on a held chord…
+  ...ritornello().slice(0, 8),
+  { pr: 'G5e Bb5s A5 G5e F5e [A4 D5 F5 A5]h!', pl: `{t100} ${octaves('Bb2')} [A1 A2]h! {~88}`, v1: 'G5e Bb5s A5 G5e F5e F5h!', v2: 'D5e G5s F5 E5e D5e D5h!', va: `${again('D4')} A4h!`, vc: `${again('Bb2')} A2h!`, cb: `${again('Bb1')} A1h!` },
+
+  // …and the piano is left alone. Cadenza: the theme in octaves,
+  { pr: `{t96}{ped1}{l.86} ${doubled(HEAD)}`, pl: `{l.8} ${doubled(HEAD, 2)}` },
+  { pr: doubled(ANSWER), pl: doubled(ANSWER, 2) },
+  // five octaves of D minor up and back in a breath, then the same on the dominant,
+  { pr: `{t100}{ped4}{l.7} ${run('Dm', 'D2', 'D7')} {~114} ${run('Dm', 'A6', 'A1')} {~102}`, pl: '{l.74} D1w!', vc: '{ppp} A2w', cb: 'A1w' },
+  { pr: `{t102} ${run('A7', 'A1', 'G5')} ${run('A7', 'A5', 'A6')} {~114} ${run('A7', 'G6', 'C#4')} {~104}`, pl: 'A0w!', vc: 'A2w', cb: 'A1w' },
+  // the whole keyboard as one scale, down and up,
+  { pr: `{t110}{ped0}{l.76} ${run('minor', 'D7', 'A2')}`, pl: "[D2 A2 D3]q'! rq rh" },
+  { pr: `{l.72} ${run('minor', 'A2', 'D7')} {l~.9}`, pl: "[A1 A2]q'! rq rh" },
+  // the ritornello's falling fifths at four times the speed,
+  { pr: `{t104}{ped1}{l.76} ${flash('D5 F5 A5 D6')} ${flash('D5 G5 Bb5 D6')} ${flash('C5 E5 G5 C6')} ${flash('C5 F5 A5 C6')}`, pl: "[D2 D3]q' [G2 G3]' [C2 C3]' [F2 F3]'" },
+  { pr: `${flash('Bb4 D5 F5 Bb5')} ${flash('Bb4 E5 G5 Bb5')} ${flash('A4 C#5 E5 A5')} ${flash('A4 D5 F5 A5')}`, pl: "[Bb1 Bb2]q' [E2 E3]' [A1 A2]' [D2 D3]'" },
+  // a diminished chord falling through the floor, a chromatic climb out of it,
+  { pr: `{t104}{ped2}{l.84} ${run('diminished', 'Bb6', 'C#3')} {ped0}{l.66} ${run('chromatic', 'A3', 'C5')}`, pl: '[A1 A2]h! rh', vc: '{ppp} A2w', cb: 'A1w' },
+  { pr: `${run('chromatic', 'C#5', 'E6')} {t104}{ped2}{l~.86} E6h%F6 {~92}`, pl: 'rh [A2 E3 G3 C#4]h*', vc: 'A2w', cb: 'A1w' },
+  // and a long trill while the strings gather under it
+  { pr: '{t92}{ped4} E6h..%F6 D6s E6 {~84}', pl: '[A1 A2]w', v1: `{pp} ${again('G5', 8)} {<ff}`, v2: again('C#5', 8), va: again('E4', 8), vc: again('A2', 8), cb: again('A1', 8) },
+
+  // the orchestra answers with the theme, and the cadence, broadening, reaches the last chord
+  tutti({ marks: '{ff}', v1: HEAD, pr: '{l.8} ' + HEAD, va: again('A4', 8), vc: again('D3', 8), pl: `{t100}{ped0}{l.66} ${octaves('D3')} ${octaves('D3')}` }),
   tutti({ ...CADENCE, pl: '{t100}' + CADENCE.pl + ' {~66}' }),
-  { pr: '[F4 A4 D5]w*{hold1.6}', pl: '[D2 D3 A3]w*', v1: 'D5w', v2: 'A4w', va: 'F4w', vc: 'D3w', cb: 'D2w' }
+  { pr: '{ped4} [F4 A4 D5]w*{hold1.6}', pl: '[D2 D3 A3]w*', v1: 'D5w', v2: 'A4w', va: 'F4w', vc: 'D3w', cb: 'D2w' }
 ];
 
 // the tunes a listener would recognise the piece by, for tools/music/tune-check.mjs
@@ -108,19 +146,15 @@ export const THEMES = {
   'Cadence (bar 9)': pitches(CADENCE.v1.replace(/%\w+/, ''))
 };
 
-const STEP = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
 const LENGTH = { w: 4, h: 2, q: 1, e: .5, s: .25, t: .125 };
-const LEVEL = { pp: .4, p: .46, mp: .56, mf: .66, f: .8, ff: .92 };   // how hard the strings bow, 0…1
+const LEVEL = { ppp: .28, pp: .4, p: .46, mp: .56, mf: .66, f: .8, ff: .92 };   // how hard the strings bow, 0…1
 const TICKS = 8;                                                        // the clock counts 32nd notes
-export const midi = name => {
-  const [, letter, accidental, octave] = name.match(/^([A-G])([b#]?)(\d)$/);
-  return 12 * (+octave + 1) + STEP[letter] + (accidental === 'b' ? -1 : accidental === '#' ? 1 : 0);
-};
 
 // Reads SCORE and decides when, how long and how firmly every note is played.
 // Returns { notes: [{ channel, m: midi key, t: seconds, off: seconds, v: 0…1 }], bars, length }.
 export function perform(score = SCORE) {
-  const tempo = [], dynamics = [], holds = [], strikes = [], problems = [];
+  const tempo = [], dynamics = [], holds = [], pedal = [{ beat: 0, value: 0 }], strikes = [], problems = [];
+  const own = Object.fromEntries(PARTS.filter(part => part.level).map(part => [part.id, [{ beat: 0, value: part.level, glide: false }]]));
   PARTS.forEach((part, index) => {
     let length = 1;
     score.forEach((bar, number) => {
@@ -131,6 +165,8 @@ export function perform(score = SCORE) {
           const mark = token.slice(1, -1), value = parseFloat(mark.replace(/^[^\d.]+/, ''));
           if (mark[0] === 't' || mark[0] === '~') tempo.push({ beat, value, glide: mark[0] === '~' });
           else if (mark.startsWith('hold')) holds.push({ beat, value });
+          else if (mark.startsWith('ped')) pedal.push({ beat, value });
+          else if (mark[0] === 'l') own[part.id].push({ beat, value, glide: mark[1] === '~' });
           else dynamics.push({ beat, value: LEVEL[mark.replace(/^[<>]/, '')], glide: /^[<>]/.test(mark) });
           continue;
         }
@@ -154,6 +190,7 @@ export function perform(score = SCORE) {
       return next?.glide && next.beat > here.beat ? here.value + (next.value - here.value) * (beat - here.beat) / (next.beat - here.beat) : here.value;
     };
   };
+  const levels = Object.fromEntries(Object.entries(own).map(([id, marks]) => [id, curve(marks)]));
   const bpm = curve(tempo), loudness = curve(dynamics), ticks = score.length * 4 * TICKS, clock = new Float64Array(ticks + 2);
   for (let tick = 0, seconds = 0; tick <= ticks + 1; tick++) {
     holds.forEach(hold => { if (Math.round(hold.beat * TICKS) === tick) seconds += hold.value; });
@@ -161,6 +198,15 @@ export function perform(score = SCORE) {
     seconds += 60 / bpm((tick + .5) / TICKS) / TICKS;
   }
   const time = beat => { const at = Math.min(ticks, beat * TICKS), tick = Math.floor(at + 1e-9); return clock[tick] + (tick < ticks ? (clock[tick + 1] - clock[tick]) * Math.max(0, at - tick) : 0); };
+
+  // a piano key let go while the pedal is down keeps ringing until the next pedal change
+  pedal.sort((a, b) => a.beat - b.beat);
+  const lift = beat => {
+    let i = 0;
+    while (i + 1 < pedal.length && pedal[i + 1].beat < beat) i++;
+    const { beat: from, value: every } = pedal[i], until = pedal[i + 1]?.beat ?? score.length * 4;
+    return every ? Math.min(until, from + Math.ceil((beat - from) / every - 1e-9) * every) : beat;
+  };
 
   // a fixed seed: the same small human unevenness every time, so a render is repeatable
   let seed = 16851750;
@@ -171,11 +217,14 @@ export function perform(score = SCORE) {
     return ((x ^ x >>> 14) >>> 0) / 4294967296;
   };
   const notes = [];
-  const add = (part, m, t, off, v) => notes.push({ channel: part.channel, m, t: Math.max(0, t + (random() - .5) * (part.level ? .007 : .014)), off, v: Math.max(.05, Math.min(1, v * (part.sing ? 1 + Math.max(-.08, Math.min(.1, (m - 76) * .005)) : 1) * (.96 + random() * .08))) });
+  // fast notes are placed more exactly than slow ones, as a good player's are
+  const add = (part, m, t, off, v, end = off) => notes.push({ channel: part.channel, m, off, end: Math.max(off, end),
+    t: Math.max(0, t + (random() - .5) * Math.min(part.level ? .007 : .014, (off - t) * .08)),
+    v: Math.max(.05, Math.min(1, v * (part.sing ? 1 + Math.max(-.08, Math.min(.1, (m - 76) * .005)) : 1) * (.96 + random() * .08))) });
   for (const { part, beat, length, flags, pitches } of strikes) {
     const pulse = beat % 4 === 0 ? 1.07 : beat % 2 === 0 ? 1.04 : beat % 1 === 0 ? 1 : beat % .5 === 0 ? .95 : .9;   // lean on the strong beats
-    const voice = (part.level ?? loudness(beat) * part.gain) * pulse * (flags.includes('!') ? 1.2 : 1) * (part.level ? pitches.length ** -.12 : 1);
-    const start = time(beat), end = time(beat + length), trill = flags.match(/%(\w+)/);
+    const voice = (part.level ? levels[part.id](beat) : loudness(beat) * part.gain) * pulse * (flags.includes('!') ? 1.2 : 1) * (part.level ? pitches.length ** -.12 : 1);
+    const start = time(beat), end = time(beat + length), ring = part.level ? time(lift(beat + length)) : 0, trill = flags.match(/%(\w+)/);
     if (trill) {   // about twelve notes a second, beginning on the upper note and closing on the main one
       const pair = [midi(trill[1]), pitches[0]], count = Math.max(2, 2 * Math.round((end - start) * 6));
       for (let i = 0; i < count; i++) add(part, pair[i % 2], time(beat + length * i / count) - (part.early ?? 0), time(beat + length * (i + 1) / count) - (part.early ?? 0), voice * (i ? .85 : 1));
@@ -184,9 +233,15 @@ export function perform(score = SCORE) {
     const share = flags.includes("'") ? .45 : length >= 1.5 ? 1 : part.held;   // detached quavers, sustained long notes
     pitches.forEach((pitch, i) => {
       const at = start + (flags.includes('*') ? i * .05 : 0) - (part.early ?? 0);
-      add(part, pitch, at, at + (end - at) * share, voice);
+      add(part, pitch, at, at + (end - at) * share, voice, ring);
     });
   }
   notes.sort((a, b) => a.t - b.t);
-  return { notes, bars: score.map((_, number) => time(number * 4)), length: Math.max(...notes.map(note => note.off)) };
+  const sounding = {};   // striking a piano key that is still ringing replaces the old sound instead of stacking on it
+  for (const note of notes.filter(note => note.channel === 0)) {
+    const last = sounding[note.m];
+    if (last && last.end > note.t) { last.end = note.t; last.off = Math.min(last.off, note.t); }
+    sounding[note.m] = note;
+  }
+  return { notes, bars: score.map((_, number) => time(number * 4)), length: Math.max(...notes.map(note => note.end)) };
 }

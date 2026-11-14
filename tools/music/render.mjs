@@ -95,14 +95,19 @@ function place(file, from, ratio, level) {
 }
 
 const PIANO = 1.05, STRINGS_LEVEL = -2.5;   // the balance: the piano's gain, and the strings' level in dB, so the piano leads
-for (const { m, t, off, v } of piece.notes.filter(note => note.channel === 0)) {
+for (const { m, t, off, end, v } of piece.notes.filter(note => note.channel === 0)) {
   const velocity = Math.max(1, Math.min(127, Math.round(v * 127))), centre = nearest(m), ratio = 2 ** ((m - centre) / 12);
-  const held = off - t, damped = m < 89, fade = damped ? (m < 48 ? .14 : .1) : .6;   // the top octave and a half has no dampers
+  const held = off - t, rings = end - t, damped = m < 89, fade = damped ? (m < 48 ? .14 : .1) : .6;   // the top octave and a half has no dampers
   const loud = PIANO * track(velocity, .73);
-  place(`${name(centre)}v${LAYERS.findIndex(top => velocity <= top) + 1}.wav`, LEAD + t, ratio, time => time > held + fade * 8 ? -1 : time > held ? loud * Math.exp(-(time - held) / fade) : loud);
+  place(`${name(centre)}v${LAYERS.findIndex(top => velocity <= top) + 1}.wav`, LEAD + t, ratio, time => {
+    let gain = loud;
+    if (time > held && rings > held + .02) gain *= .5 + .5 * Math.exp(-(time - held) / .07);   // key up but pedal down: a softer ring
+    if (time > rings) gain *= Math.exp(-(time - rings) / fade);
+    return time > rings + fade * 8 ? -1 : gain;
+  });
   if (!damped) continue;
   // what the real instrument does when the damper lands: the strings' after-ring, and the key coming back up
-  const quiet = decay => decibels(-decay * held), after = (file, level, pitch = ratio) => existsSync(path.join(grand, file)) && place(file, LEAD + off, pitch, time => time > 2.5 ? -1 : PIANO * level);
+  const quiet = decay => decibels(-decay * rings), after = (file, level, pitch = ratio) => existsSync(path.join(grand, file)) && place(file, LEAD + end, pitch, time => time > 2.5 ? -1 : PIANO * level);
   if (velocity >= 45) after(`harmL${name(centre)}.wav`, decibels(-4) * track(velocity, .92) * quiet(m < 29 ? 6 : m < 38 ? 7 : m < 50 ? 8 : 9));
   else after(`harmS${name(centre)}.wav`, track(velocity, m < 44 ? .95 : .9) * quiet(7));
   after(`harmV3${name(centre)}.wav`, track(velocity, .96) * quiet(2));
