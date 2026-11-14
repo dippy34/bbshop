@@ -26,8 +26,8 @@ The page works without JavaScript, showing the core content and supplied images.
 - `css/style.css`: colours, typography and responsive layout.
 - `js/main.js`: CONFIG, entry, navigation, optional ambience controls and image discovery.
 - `js/sound.js`: locally synthesized website ambience.
-- `js/music.js`: starts, stops and loops the music, *Concerto in D minor for harpsichord and strings*, an original Baroque-style piece written for the site.
-- `audio/concerto.mp3`: the recording, played by a sampled harpsichord and string orchestra. `tools/music/` holds the score and the script that recorded it; see README.
+- `js/music.js`: starts, stops and loops the music, *Concerto in D minor for piano and strings*, an original Baroque-style piece written for the site.
+- `audio/concerto.mp3`: the recording, played on recordings of a concert grand piano and a string orchestra. `tools/music/` holds the score and the script that recorded it; see README.
 - `PHOTOS-NEEDED.md`: installed images, future artwork and replacement instructions.
 - `SITE-REQUIREMENTS.md`: remaining factual questions, one per bullet.
 

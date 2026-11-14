@@ -1,5 +1,5 @@
 /* =====================================================================
-   MUSIC — Concerto in D minor for harpsichord and strings: an original
+   MUSIC — Concerto in D minor for piano and strings: an original
    piece in the Baroque manner, written for this site. audio/concerto.mp3
    is a recording of it; the score, and how the recording was made, are
    in tools/music/. This file only starts and stops that recording with
@@ -42,5 +42,5 @@ window.Music = (() => {
     fade(0, () => audio.pause());   // it picks up from the same spot next time
   }
 
-  return { title: 'Concerto in D minor for harpsichord and strings', play, pause, get playing() { return playing; } };
+  return { title: 'Concerto in D minor for piano and strings', play, pause, get playing() { return playing; } };
 })();

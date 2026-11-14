@@ -28,16 +28,16 @@ The trailer and official-link sections stay hidden until configured. Empty map-i
 
 ## Music
 
-"Enter with sound" plays *Concerto in D minor for harpsichord and strings*, an original piece in the Baroque manner written for this site, over the ambience. `audio/concerto.mp3` is the recording; `js/music.js` only starts and stops it with the sound control and plays it again after a breath. The file is not downloaded until a visitor asks for sound.
+"Enter with sound" plays *Concerto in D minor for piano and strings*, an original piece in the Baroque manner written for this site, over the ambience. `audio/concerto.mp3` is the recording; `js/music.js` only starts and stops it with the sound control and plays it again after a breath. The file is not downloaded until a visitor asks for sound.
 
-The piece is written out as text in `tools/music/score.mjs`, one line per instrument per bar. `tools/music/render.mjs` turns that into a performance and has FluidSynth play it with sampled instruments: a harpsichord and a string orchestra. To change the music, edit the score and run:
+The piece is written out as text in `tools/music/score.mjs`, one line per instrument per bar. `tools/music/render.mjs` turns that into a performance played on recordings of real instruments: a concert grand piano and a string orchestra. To change the music, edit the score, download the 44.1 kHz 16-bit piano recordings from https://freepats.zenvoid.org/Piano/acoustic-grand-piano.html, and run:
 
 ```sh
 apt install fluidsynth ffmpeg musescore-general-soundfont-lossless
-node tools/music/render.mjs
+node tools/music/render.mjs path/to/SalamanderGrandPianoV3_44.1khz16bit/44.1khz16bit
 ```
 
-Instrument samples: the MuseScore General SoundFont by S. Christian Collins and contributors, MIT licence. Any General MIDI SoundFont with a harpsichord and a string section can be passed as the first argument instead.
+Piano recordings: Salamander Grand Piano V3 by Alexander Holm, licensed [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/). String samples: the MuseScore General SoundFont by S. Christian Collins and contributors, MIT licence, played by FluidSynth.
 
 ## Review tools
 
