@@ -24,7 +24,7 @@
     }
     const playing = Boolean(window.Sound?.on);
     soundButton.setAttribute('aria-pressed', String(playing));
-    soundButton.setAttribute('aria-label', playing ? 'Mute website ambient sound' : 'Enable website ambient sound');
+    soundButton.setAttribute('aria-label', playing ? 'Mute website music and ambient sound' : 'Enable website music and ambient sound');
     soundButton.querySelector('span').textContent = playing ? 'Sound on' : 'Sound off';
   }
 

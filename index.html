@@ -18,7 +18,7 @@
   <a class="skip-link" href="#game">Skip to game information</a>
   <div class="grain" aria-hidden="true"></div>
 
-  <!-- EDIT: entry screen only enables optional website ambience, never a microphone. -->
+  <!-- EDIT: entry screen only enables optional website music and ambience, never a microphone. -->
   <div class="gate" role="dialog" aria-modal="true" aria-label="Enter Containment Breach">
     <div class="gate-inner">
       <img class="gate-logo" src="images/logo.png" alt="Containment Breach" width="1215" height="297">
@@ -27,7 +27,7 @@
         <button class="btn" data-enter="sound" type="button">Enter with sound <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
         <button class="text-link" data-enter="mute" type="button">Enter without sound</button>
       </div>
-      <small>Optional ambient audio for the website.</small>
+      <small>Optional piano music and ambience for the website.</small>
     </div>
   </div>
 
@@ -40,7 +40,7 @@
       <a href="#worlds">The levels</a>
       <a href="#bonegrit">Bonegrit</a>
     </nav>
-    <button class="sound-toggle" type="button" aria-pressed="false" aria-label="Enable website ambient sound">
+    <button class="sound-toggle" type="button" aria-pressed="false" aria-label="Enable website music and ambient sound">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/><path class="sound-waves" d="M17 8c2 2 2 6 0 8m3-11c4 4 4 10 0 14"/><path class="sound-cross" d="m17 9 5 6m0-6-5 6"/></svg>
       <span>Sound off</span>
     </button>
@@ -147,6 +147,7 @@
   <script src="vendor/gsap.min.js" defer></script>
   <script src="vendor/ScrollTrigger.min.js" defer></script>
   <script src="vendor/lenis.min.js" defer></script>
+  <script src="js/music.js" defer></script>
   <script src="js/sound.js" defer></script>
   <script src="js/main.js" defer></script>
 </body>

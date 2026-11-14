@@ -2,6 +2,7 @@
    SOUND — everything you hear is synthesised live (no audio files):
    the fluorescent hum, footsteps on carpet, a low dread drone, breathing,
    a heartbeat and tape static. main.js turns the knobs as you scroll.
+   The piano piece lives in music.js and starts and stops with this switch.
    ===================================================================== */
 window.Sound = (() => {
   let ctx = null, master, humBus, droneBus, staticBus, breathBus, noiseBuf, on = false, heartTimer = null, bpm = 0;
@@ -51,6 +52,7 @@ window.Sound = (() => {
     if (yes) { ctx.resume(); to(master.gain, VOLUME, .6); }
     else to(master.gain, 0, .15);
     if (!yes) heart(0);
+    if (yes) window.Music?.play(ctx); else window.Music?.pause();
   }
 
   // called on every scroll update with the story's state (all 0…1)
