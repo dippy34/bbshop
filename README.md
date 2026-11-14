@@ -41,6 +41,17 @@ To check how original the piece's tunes are, `node tools/music/tune-check.mjs` c
 
 Piano recordings: Salamander Grand Piano V3 by Alexander Holm, licensed [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/). String samples: the MuseScore General SoundFont by S. Christian Collins and contributors, MIT licence, played by FluidSynth.
 
+## A second piece: the Rhapsody
+
+`audio/rhapsody.mp3` is *Rhapsody in D minor for piano and orchestra* (3:35), an original showpiece for the same grand piano and a full orchestra: flute, oboe, clarinet, bassoon, horns, trumpets, trombones, tuba, timpani, percussion and strings. The site does not play it; to make it the site's music, point `FILE` in `js/music.js` at it.
+
+Its score is `tools/music/rhapsody/score.mjs`. Most accompaniment is not typed out note by note: each bar names its harmony and small helpers voice it for each instrument. `engine.mjs` beside it turns the score into timed notes, and `render.mjs` records it, with the same piano recordings and SoundFont as above:
+
+```sh
+node tools/music/rhapsody/render.mjs path/to/SalamanderGrandPianoV3_44.1khz16bit/44.1khz16bit
+node tools/music/tune-check.mjs tools/music/rhapsody/score.mjs
+```
+
 ## Review tools
 
 The scripts in `tools/` use a recent Node.js with built-in WebSocket support and Google Chrome installed at its standard macOS location. Start the local server first.

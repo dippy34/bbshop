@@ -1,13 +1,16 @@
 // Checks the piece's tunes against a catalogue of existing music, to see how original they are.
 //
-//   node tools/music/tune-check.mjs
+//   node tools/music/tune-check.mjs [path/to/score.mjs]
 //
 // The catalogue is RISM Online (https://rism.online): the opening themes ("incipits") of well over a million
 // pieces of music surviving from roughly 1600 to 1850, searchable by melody. Matching is by the pattern of
 // steps and leaps between notes, so key and rhythm do not matter: it answers "does any catalogued piece
 // open with these notes in this order?". Short runs always match something (scales and chords belong to
 // everyone); what matters is how long a run is shared.
-import { THEMES } from './score.mjs';
+import path from 'node:path';
+import { pathToFileURL } from 'node:url';
+
+const { THEMES } = await import(process.argv[2] ? pathToFileURL(path.resolve(process.argv[2])).href : './score.mjs');
 
 const pae = notes => {   // RISM's "Plaine & Easie" spelling: ' marks the octave, x is a sharp, b a flat
   let out = '', octave = null;
