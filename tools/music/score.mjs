@@ -37,8 +37,9 @@ const tutti = ({ v1, v2 = v1, va, vc, pr = v1, pl, marks = '', basses = true }) 
 // solo: the piano runs, the strings hold soft chords under it
 const solo = ({ pr, pl, v1 = 'rw', v2 = 'rw', va = 'rw', vc = 'rw', cb = 'rw', marks = '' }) => ({ pr: marks + pr, pl, v1, v2, va, vc, cb });
 
-const HEAD = 'D5e F5s E5 D5e A5s G5 F5e D6s C#6 D6e A5e';          // the ritornello's opening: long-short-short, three times, and a leap
-const ANSWER = 'A4e C#5s B4 A4e E5s D5 C#5e A5s G#5 A5e E5e';     // the same on the dominant
+const HEAD = 'D5e A5s F5 D6e C#6s D6 A5e Bb5s A5 F5e D5e';          // the ritornello's opening: a zigzag up the chord, long-short-short, and back down
+const ANSWER = 'A4e E5s C#5 A5e G#5s A5 E5e F5s E5 C#5e A4e';      // the same on the dominant
+const HEAD_MAJOR = 'F5e C6s A5 F6e G6s F6 C6e D6s C6 A5e F5e', ANSWER_MAJOR = 'C5e G5s E5 C6e D6s C6 G5e A5s G5 E5e C5e';   // and in F major
 const CADENCE = { v1: 'G5e Bb5s A5 G5e F5e E5q.%F5 D5e', v2: 'D5e G5s F5 E5e D5e C#5h', va: `${again('D4')} ${again('E4')}`, vc: `${again('Bb2')} ${again('A2')}`, pl: `${octaves('Bb2')} ${octaves('A2')}` };
 
 // the ritornello: statement, a soft echo of it, a chain of falling fifths, and a trilled cadence
@@ -70,8 +71,8 @@ export const SCORE = [
   solo({ pr: 'D5s E5 F5 G5 A5 Bb5 C6 D6 E6 D6 C6 Bb5 A5 G5 F5 E5', pl: `${octaves('Bb2')} ${octaves('C3')}`, v1: '{pp} Bb4h Bb4 {<f}', v2: 'F4h G4', va: 'D4h E4', vc: 'Bb2h C3' }),
 
   // the ritornello's opening in F major, turning towards G minor
-  tutti({ marks: '{f}', v1: 'F5e A5s G5 F5e C6s Bb5 A5e F6s E6 F6e C6e', va: again('A4', 8), vc: again('F3', 8), pl: `${octaves('F2')} ${octaves('F2')}` }),
-  tutti({ v1: 'C5e E5s D5 C5e G5s F5 E5e C6s B5 C6e G5e', va: again('G4', 8), vc: again('C3', 8), pl: `${octaves('C3')} ${octaves('C3')}` }),
+  tutti({ marks: '{f}', v1: HEAD_MAJOR, va: again('A4', 8), vc: again('F3', 8), pl: `${octaves('F2')} ${octaves('F2')}` }),
+  tutti({ v1: ANSWER_MAJOR, va: again('G4', 8), vc: again('C3', 8), pl: `${octaves('C3')} ${octaves('C3')}` }),
   tutti({ v1: 'A5e F5s G5 A5e C6e A5e F#5s G5 A5e D5e', v2: 'F5e D5s E5 F5e A5e F#5e D5s E5 F#5e C5e', va: again('C5', 8), vc: `${again('F3')} ${again('F#3')}`, pl: `${octaves('F2')} ${octaves('F#2')}` }),
   tutti({ v1: 'Bb5e G5e C6s Bb5 A5 G5 A5q.%Bb5 G5e', v2: 'D5e Bb4 Eb5 C5 F#5h', va: 'Bb4e Bb4 G4 G4 A4 A4 A4 A4', vc: 'G3e G3 Eb3 Eb3 D3 D3 D3 D3', pl: 'G2e G3 Eb3 Eb2 D3 D2 D3 D2' }),
 
@@ -95,6 +96,17 @@ export const SCORE = [
   tutti({ ...CADENCE, pl: '{t100}' + CADENCE.pl + ' {~66}' }),
   { pr: '[F4 A4 D5]w*{hold1.6}', pl: '[D2 D3 A3]w*', v1: 'D5w', v2: 'A4w', va: 'F4w', vc: 'D3w', cb: 'D2w' }
 ];
+
+// the tunes a listener would recognise the piece by, for tools/music/tune-check.mjs
+const pitches = text => text.match(/[A-G][b#]?\d/g);
+export const THEMES = {
+  'Opening theme (bar 1)': pitches(HEAD),
+  'Its answer (bar 2)': pitches(ANSWER),
+  'Opening theme and answer together, as a catalogue would list this piece': pitches(HEAD + ' ' + ANSWER),
+  'Opening theme in the major (bar 19)': pitches(HEAD_MAJOR + ' ' + ANSWER_MAJOR),
+  'Falling sequence (bars 5-6)': pitches('A5 F5 G5 A5 D6 Bb5 G5 A5 Bb5 G5 G5 E5 F5 G5 C6 A5 F5 G5 A5 F5'),
+  'Cadence (bar 9)': pitches(CADENCE.v1.replace(/%\w+/, ''))
+};
 
 const STEP = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
 const LENGTH = { w: 4, h: 2, q: 1, e: .5, s: .25, t: .125 };

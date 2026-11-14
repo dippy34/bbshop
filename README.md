@@ -37,6 +37,8 @@ apt install fluidsynth ffmpeg musescore-general-soundfont-lossless
 node tools/music/render.mjs path/to/SalamanderGrandPianoV3_44.1khz16bit/44.1khz16bit
 ```
 
+To check how original the piece's tunes are, `node tools/music/tune-check.mjs` compares them with RISM Online's catalogue of the opening themes of music surviving from about 1600 to 1850 and reports how many notes in a row any catalogued piece shares with each one.
+
 Piano recordings: Salamander Grand Piano V3 by Alexander Holm, licensed [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/). String samples: the MuseScore General SoundFont by S. Christian Collins and contributors, MIT licence, played by FluidSynth.
 
 ## Review tools
