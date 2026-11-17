@@ -2,6 +2,9 @@
 //
 //   node tools/music/rhapsody/render.mjs <piano> [orchestra.sf2] [out.mp3]
 //
+// It records the Rhapsody beside it unless SCORE names another score file (a score with only piano parts needs
+// no SoundFont). HALL sets how far under the piano its hall sits, in dB.
+//
 // <piano> is the unpacked "Salamander Grand Piano V3" (44.1 kHz, 16 bit) folder that holds A0v1.wav … C8v16.wav
 // (a Yamaha C5 concert grand recorded note by note by Alexander Holm, CC BY 3.0,
 // https://freepats.zenvoid.org/Piano/acoustic-grand-piano.html). [orchestra.sf2] is a General MIDI SoundFont;
@@ -13,11 +16,14 @@ import { execFileSync, spawnSync } from 'node:child_process';
 import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { perform } from './engine.mjs';
-import * as piece from './score.mjs';
 
-const [grand, soundfont = '/usr/share/sounds/sf2/MuseScore_General_Full.sf2', out = 'audio/rhapsody.mp3'] = process.argv.slice(2);
-if (!grand || !existsSync(path.join(grand, 'C4v8.wav')) || !existsSync(soundfont)) { console.error('usage: node tools/music/rhapsody/render.mjs <folder with A0v1.wav … C8v16.wav> [orchestra.sf2] [out.mp3]'); process.exit(1); }
+const piece = await import(process.env.SCORE ? pathToFileURL(path.resolve(process.env.SCORE)).href : './score.mjs');
+
+const [grand, font, out = 'audio/rhapsody.mp3'] = process.argv.slice(2), soundfont = font || '/usr/share/sounds/sf2/MuseScore_General_Full.sf2';
+const players = piece.PARTS.some(part => !part.piano);   // is there an orchestra at all?
+if (!grand || !existsSync(path.join(grand, 'C4v8.wav')) || (players && !existsSync(soundfont))) { console.error('usage: node tools/music/rhapsody/render.mjs <folder with A0v1.wav … C8v16.wav> [orchestra.sf2] [out.mp3]'); process.exit(1); }
 
 const RATE = 44100, LEAD = .4, TAIL = 4;
 const played = perform(piece), seconds = LEAD + played.length + TAIL, total = Math.ceil(seconds * RATE);
@@ -48,7 +54,7 @@ function orchestra(file, only) {
     '-o', 'synth.chorus.active=0', '-o', 'synth.reverb.active=1', '-o', 'synth.reverb.room-size=0.85', '-o', 'synth.reverb.damp=0.3', '-o', 'synth.reverb.width=1', '-o', 'synth.reverb.level=0.8',
     soundfont, path.join(work, 'part.mid')], { stdio: ['ignore', 'ignore', 'inherit'] });
 }
-orchestra(path.join(work, 'orchestra.wav'));
+if (players) orchestra(path.join(work, 'orchestra.wav'));
 
 /* ---- the piano: the grand's own recordings, placed note by note ---- */
 const NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
@@ -122,7 +128,7 @@ for (let channel = 0; channel < 2; channel++) {
   for (const [delay, level] of channel ? [[.013, .1], [.024, -.07], [.037, .05]] : [[.011, .1], [.027, -.07], [.034, .05]]) hall[2 * Math.round(delay * RATE) + channel] += level;
   let energy = 0;
   for (let i = 0; i < hallFrames; i++) energy += hall[2 * i + channel] ** 2;
-  for (let i = 0; i < hallFrames; i++) hall[2 * i + channel] *= Math.sqrt(decibels(-9) ** 2 / energy);   // the room sits 9 dB under the piano
+  for (let i = 0; i < hallFrames; i++) hall[2 * i + channel] *= Math.sqrt(decibels(+(process.env.HALL ?? -9)) ** 2 / energy);   // the room sits 9 dB under the piano
   hall[channel] = 1;
 }
 const wave = (file, interleaved) => {
@@ -139,10 +145,11 @@ wave(path.join(work, 'hall.wav'), hall);
 
 /* ---- together: piano in the hall, plus the orchestra, gently evened out and brought up to full level ---- */
 const stems = process.env.KEEP_STEMS;   // a folder to also save each family on its own, for checking the balance
-const together = `[0:a][1:a]afir=dry=1:wet=1:gtype=none[piano];[2:a]volume=${ORCHESTRA}dB[orchestra];[piano][orchestra]amix=inputs=2:normalize=0:duration=longest,highpass=f=26,acompressor=threshold=-20dB:ratio=2:attack=30:release=350:knee=8:makeup=1`;
-const inputs = ['-i', path.join(work, 'piano.wav'), '-i', path.join(work, 'hall.wav'), '-i', path.join(work, 'orchestra.wav')];
+const finish = 'highpass=f=26,acompressor=threshold=-20dB:ratio=2:attack=30:release=350:knee=8:makeup=1';
+const together = players ? `[0:a][1:a]afir=dry=1:wet=1:gtype=none[piano];[2:a]volume=${ORCHESTRA}dB[orchestra];[piano][orchestra]amix=inputs=2:normalize=0:duration=longest,${finish}` : `[0:a][1:a]afir=dry=1:wet=1:gtype=none,${finish}`;
+const inputs = ['-i', path.join(work, 'piano.wav'), '-i', path.join(work, 'hall.wav'), ...(players ? ['-i', path.join(work, 'orchestra.wav')] : [])];
 execFileSync('ffmpeg', ['-loglevel', 'error', '-y', ...inputs, '-lavfi', together, '-t', seconds.toFixed(2), '-c:a', 'pcm_f32le', path.join(work, 'together.wav')]);
-if (stems) {
+if (stems && players) {
   execFileSync('ffmpeg', ['-loglevel', 'error', '-y', ...inputs.slice(0, 4), '-lavfi', '[0:a][1:a]afir=dry=1:wet=1:gtype=none', '-c:a', 'pcm_f32le', path.join(stems, 'piano.wav')]);
   for (const [family, ids] of Object.entries({ strings: ['v1', 'v2', 'va', 'vc', 'cb', 'tr'], winds: ['fl', 'ob', 'cl', 'bn'], brass: ['hn', 'tp', 'tb', 'tu'], percussion: ['tm', 'pc'] })) {
     orchestra(path.join(work, 'stem.wav'), ids);

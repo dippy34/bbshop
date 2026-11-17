@@ -52,6 +52,12 @@ node tools/music/rhapsody/render.mjs path/to/SalamanderGrandPianoV3_44.1khz16bit
 node tools/music/tune-check.mjs tools/music/rhapsody/score.mjs
 ```
 
+`tools/music/ringtone/score.mjs` is a third score: *Lightning Toccata*, a 25-second piano solo written to be a phone ringtone. It has no orchestra, so it needs no SoundFont; its recording is not kept in this repo:
+
+```sh
+SCORE=tools/music/ringtone/score.mjs HALL=-13 node tools/music/rhapsody/render.mjs path/to/44.1khz16bit "" toccata.wav
+```
+
 ## Review tools
 
 The scripts in `tools/` use a recent Node.js with built-in WebSocket support and Google Chrome installed at its standard macOS location. Start the local server first.
