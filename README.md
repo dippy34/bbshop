@@ -52,10 +52,11 @@ node tools/music/rhapsody/render.mjs path/to/SalamanderGrandPianoV3_44.1khz16bit
 node tools/music/tune-check.mjs tools/music/rhapsody/score.mjs
 ```
 
-`tools/music/ringtone/score.mjs` is a third score: *Lightning Toccata*, a 25-second piano solo written to be a phone ringtone. It has no orchestra, so it needs no SoundFont; its recording is not kept in this repo:
+`tools/music/ringtone/` holds two more scores, both 25-second piano solos written to be phone ringtones. `score.mjs` is *Lightning Toccata*. `impossible.mjs` is *Impossible Étude in A minor*, which is written for four hands at once and is deliberately more than one pianist could play. Neither has an orchestra, so they need no SoundFont; their recordings are not kept in this repo:
 
 ```sh
 SCORE=tools/music/ringtone/score.mjs HALL=-13 node tools/music/rhapsody/render.mjs path/to/44.1khz16bit "" toccata.wav
+SCORE=tools/music/ringtone/impossible.mjs HALL=-15 node tools/music/rhapsody/render.mjs path/to/44.1khz16bit "" impossible.wav
 ```
 
 ## Review tools
