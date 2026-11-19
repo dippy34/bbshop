@@ -59,6 +59,13 @@ SCORE=tools/music/ringtone/score.mjs HALL=-13 node tools/music/rhapsody/render.m
 SCORE=tools/music/ringtone/impossible.mjs HALL=-15 node tools/music/rhapsody/render.mjs path/to/44.1khz16bit "" impossible.wav
 ```
 
+`tools/music/phonk/` makes *NO REHEARSAL*, an original phonk track in G minor at 128 beats a minute, plus a slowed + reverb version of it. `piano.mjs` is its piano part, recorded on the same grand. `make.py` builds everything else and mixes it. The drums and cowbell come from the SoundFont's TR-808 kit, with the cowbell re-tuned note by note for the hook; the choir comes from the same SoundFont; the 808 bass is a sine wave with a falling pitch at each strike, glides and saturation. It needs Python with numpy and scipy:
+
+```sh
+SCORE=tools/music/phonk/piano.mjs HALL=-8 node tools/music/rhapsody/render.mjs path/to/44.1khz16bit "" piano.wav
+python3 tools/music/phonk/make.py piano.wav out/
+```
+
 ## Review tools
 
 The scripts in `tools/` use a recent Node.js with built-in WebSocket support and Google Chrome installed at its standard macOS location. Start the local server first.
